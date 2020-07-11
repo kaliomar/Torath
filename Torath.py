@@ -1,6 +1,7 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication,QWidget,QMainWindow,QLabel,QComboBox,QVBoxLayout,QHBoxLayout,QLineEdit
+from PyQt5.QtWidgets import QApplication,QWidget,QMainWindow,QLabel,\
+    QComboBox,QVBoxLayout,QHBoxLayout,QLineEdit
 
 class Comp(QWidget):
     def __init__(self):
@@ -25,7 +26,8 @@ class Comp(QWidget):
         self.lbl_totalprice = QLabel('جنية')
         self.lbl_adv = QLabel('المقدم')
         self.adv = QLineEdit(self)
-        self.percent = QLabel('55')
+        self.percent = QLineEdit(self)
+        self.percent.setFixedWidth(45)
         self.lbl_percent = QLabel('%')
         self.lbl_quart = QLabel('قيمة القسط ربع السنوي')
         self.quart = QLineEdit(self)
@@ -74,42 +76,61 @@ class Comp(QWidget):
         v_layout.addStretch()
 
 
-        self.apartnumC.currentTextChanged.connect(self.num_area_func)
         self.priceC.currentTextChanged.connect(self.all_func)
         self.apartnumC.currentTextChanged.connect(self.all_func)
+        self.apartnumC.currentTextChanged.connect(self.percent_func)
+        self.adv.textChanged.connect(self.percent_func)
+        self.timeC.currentTextChanged.connect(self.percent_func)
+        self.percent.textChanged.connect(self.color_adv)
 
         self.setLayout(v_layout)
         self.resize(600,400)
         self.show()
 
-    def num_area_func(self):
-        try:
-            self.area.setText(self.num_area[int(self.apartnumC.currentText())])
-        except:
-            self.area.setText('')
-
     def all_func(self):
         if self.priceC.currentText() == 'كاش' :
-            self.timeC.setCurrentText('')
-            self.timeC.setDisabled(True)
-            self.time.setDisabled(True)
-            self.quart.setDisabled(True)
-            self.lbl_quart.setDisabled(True)
-            self.percent.setDisabled(True)
-            self.lbl_percent.setDisabled(True)
-            self.adv.setDisabled(True)
-            self.lbl_adv.setDisabled(True)
-            self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
-            self.totalprice.setText(str(int(self.meterprice.text())*int(self.area.text())))
+            if self.apartnumC.currentText() != '':
+                self.timeC.setCurrentText('')
+                self.timeC.setDisabled(True)
+                self.time.setDisabled(True)
+                self.quart.setDisabled(True)
+                self.lbl_quart.setDisabled(True)
+                self.percent.setDisabled(True)
+                self.lbl_percent.setDisabled(True)
+                self.adv.setDisabled(True)
+                self.lbl_adv.setDisabled(True)
+                self.area.setText(self.num_area[int(self.apartnumC.currentText())])
+                self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
+                self.totalprice.setText(str(int(self.meterprice.text())*int(self.area.text())))
+            else:
+                self.area.setText('')
+                self.meterprice.setText('')
+                self.totalprice.setText('')
         else:
-            self.timeC.setDisabled(False)
-            self.time.setDisabled(False)
-            self.quart.setDisabled(False)
-            self.lbl_quart.setDisabled(False)
-            self.percent.setDisabled(False)
-            self.lbl_percent.setDisabled(False)
-            self.adv.setDisabled(False)
-            self.lbl_adv.setDisabled(False)
+            if self.apartnumC.currentText() != '':
+                self.timeC.setDisabled(False)
+                self.time.setDisabled(False)
+                self.quart.setDisabled(False)
+                self.lbl_quart.setDisabled(False)
+                self.percent.setDisabled(False)
+                self.lbl_percent.setDisabled(False)
+                self.adv.setDisabled(False)
+                self.lbl_adv.setDisabled(False)
+                self.area.setText(self.num_area[int(self.apartnumC.currentText())])
+                self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
+                self.totalprice.setText(str(int(self.meterprice.text()) * int(self.area.text())))
+
+    def percent_func(self):
+        if self.priceC.currentText() == 'قسط':
+            if self.adv.text() != '':
+                self.percent.setText(str(round((100*((int(self.adv.text())/int(self.totalprice.text())))),2)))
+                self.quart.setText(str(round(int((int(self.totalprice.text())-int(self.adv.text()))/(int(self.timeC.currentText())/3)),1)))
+
+    def color_adv(self):
+        if float(self.percent.text()) < 30 or float(self.percent.text()) > 100:
+            self.adv.setStyleSheet("color:red")
+        else:
+            self.adv.setStyleSheet("color:blue")
 
 class window(QMainWindow):
     def __init__(self):
