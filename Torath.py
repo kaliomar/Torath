@@ -1,5 +1,7 @@
 import sys
 
+from PyQt5.QtGui import QImage,QPalette,QBrush
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QApplication,QWidget,QMainWindow,QLabel,\
     QComboBox,QVBoxLayout,QHBoxLayout,QLineEdit
 
@@ -100,7 +102,7 @@ class Comp(QWidget):
 
         self.setLayout(v_layout)
 
-        self.show()
+
 
     def all_func(self):
         try:
@@ -169,22 +171,28 @@ class Comp(QWidget):
             pass
 
     def sys_func(self):
-        if self.adv.text() != '':
-            still = int(self.totalprice.text()) - int(self.adv.text())
-            modistill = round(still*float(self.time_pric[int(self.timeC.currentText())]),0) + int(self.adv.text())
-            self.totalsys.setText(str(modistill))
-            self.metersys.setText(str(round(modistill/int(self.area.text()),0)))
+        try:
+            if self.adv.text() != '':
+                still = int(self.totalprice.text()) - int(self.adv.text())
+                modistill = round(still * float(self.time_pric[int(self.timeC.currentText())]), 0) + int(
+                    self.adv.text())
+                self.totalsys.setText(str(modistill))
+                self.metersys.setText(str(round(modistill / int(self.area.text()), 0)))
+            else:
+                pass
+        except:
+            pass
 
 class window(QMainWindow):
     def __init__(self):
         super(window, self).__init__()
         self.formWidget = Comp()
         self.setCentralWidget(self.formWidget)
+        self.setWindowTitle('Pricing')
 
         self.init_ui()
 
     def init_ui(self):
-        pass
 
         self.show()
 
