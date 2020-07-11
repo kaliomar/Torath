@@ -98,9 +98,8 @@ class Comp(QWidget):
         self.timeC.currentTextChanged.connect(self.sys_func)
         self.apartnumC.currentTextChanged.connect(self.sys_func)
 
-
         self.setLayout(v_layout)
-        self.resize(600,400)
+
         self.show()
 
     def all_func(self):
@@ -116,6 +115,12 @@ class Comp(QWidget):
                     self.lbl_percent.setDisabled(True)
                     self.adv.setDisabled(True)
                     self.lbl_adv.setDisabled(True)
+                    self.metersys.setDisabled(True)
+                    self.lbl_metersys.setDisabled(True)
+                    self.totalsys.setDisabled(True)
+                    self.lbl_totalsys.setDisabled(True)
+                    self.lblsys.setDisabled(True)
+
                     self.area.setText(self.num_area[int(self.apartnumC.currentText())])
                     self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
                     self.totalprice.setText(str(int(self.meterprice.text()) * int(self.area.text())))
@@ -133,6 +138,11 @@ class Comp(QWidget):
                     self.lbl_percent.setDisabled(False)
                     self.adv.setDisabled(False)
                     self.lbl_adv.setDisabled(False)
+                    self.metersys.setDisabled(False)
+                    self.lbl_metersys.setDisabled(False)
+                    self.totalsys.setDisabled(False)
+                    self.lbl_totalsys.setDisabled(False)
+                    self.lblsys.setDisabled(False)
                     self.area.setText(self.num_area[int(self.apartnumC.currentText())])
                     self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
                     self.totalprice.setText(str(int(self.meterprice.text()) * int(self.area.text())))
@@ -168,6 +178,8 @@ class Comp(QWidget):
 class window(QMainWindow):
     def __init__(self):
         super(window, self).__init__()
+        self.formWidget = Comp()
+        self.setCentralWidget(self.formWidget)
 
         self.init_ui()
 
@@ -177,5 +189,5 @@ class window(QMainWindow):
         self.show()
 
 app = QApplication(sys.argv)
-win = Comp()
+win = window()
 sys.exit(app.exec_())
