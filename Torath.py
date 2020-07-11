@@ -31,9 +31,15 @@ class Comp(QWidget):
         self.lbl_percent = QLabel('%')
         self.lbl_quart = QLabel('قيمة القسط ربع السنوي')
         self.quart = QLineEdit(self)
+        self.metersys = QLabel('')
+        self.lbl_metersys = QLabel('جنية')
+        self.totalsys = QLabel('')
+        self.lbl_totalsys = QLabel('جنية')
+        self.lblsys = QLabel('أســعار التقسيــــط')
 
         self.num_area = {1:'133',2:'108',3:'118'}
-        self.num_pric = {1:'4300',2:'4100',3:'3950'}
+        self.num_pric = {1:'4200',2:'4050',3:'3950'}
+        self.time_pric = {6:1.02,12:1.06,18:1.09,24:1.12,30:1.16,36:1.2}
 
 
         self.init_ui()
@@ -43,7 +49,7 @@ class Comp(QWidget):
         h_layout1 = QHBoxLayout()
         h_layout2 = QHBoxLayout()
         h_layout3 = QHBoxLayout()
-
+        h_layout4 = QHBoxLayout()
 
         h_layout1.addWidget(self.time)
         h_layout1.addWidget(self.timeC)
@@ -67,14 +73,20 @@ class Comp(QWidget):
         h_layout3.addWidget(self.adv)
         h_layout3.addWidget(self.lbl_adv)
 
+        h_layout4.addWidget(self.lbl_totalsys)
+        h_layout4.addWidget(self.totalsys)
+        h_layout4.addWidget(self.lbl_metersys)
+        h_layout4.addWidget(self.metersys)
+        h_layout4.addWidget(self.lblsys)
 
         v_layout.addLayout(h_layout1)
         v_layout.addWidget(self.lbl)
         v_layout.addLayout(h_layout2)
         v_layout.addWidget(self.lbl)
         v_layout.addLayout(h_layout3)
+        v_layout.addWidget(self.lbl)
+        v_layout.addLayout(h_layout4)
         v_layout.addStretch()
-
 
         self.priceC.currentTextChanged.connect(self.all_func)
         self.apartnumC.currentTextChanged.connect(self.all_func)
@@ -82,6 +94,10 @@ class Comp(QWidget):
         self.adv.textChanged.connect(self.percent_func)
         self.timeC.currentTextChanged.connect(self.percent_func)
         self.percent.textChanged.connect(self.color_adv)
+        self.adv.textChanged.connect(self.sys_func)
+        self.timeC.currentTextChanged.connect(self.sys_func)
+        self.apartnumC.currentTextChanged.connect(self.sys_func)
+
 
         self.setLayout(v_layout)
         self.resize(600,400)
@@ -107,7 +123,7 @@ class Comp(QWidget):
                     self.area.setText('')
                     self.meterprice.setText('')
                     self.totalprice.setText('')
-            else:
+            elif self.priceC.currentText() == 'قسط':
                 if self.apartnumC.currentText() != '':
                     self.timeC.setDisabled(False)
                     self.time.setDisabled(False)
@@ -120,6 +136,7 @@ class Comp(QWidget):
                     self.area.setText(self.num_area[int(self.apartnumC.currentText())])
                     self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
                     self.totalprice.setText(str(int(self.meterprice.text()) * int(self.area.text())))
+
         except:
             pass
 
@@ -128,9 +145,7 @@ class Comp(QWidget):
             if self.priceC.currentText() == 'قسط':
                 if self.adv.text() != '':
                     self.percent.setText(str(round((100 * ((int(self.adv.text()) / int(self.totalprice.text())))), 2)))
-                    self.quart.setText(str(round(
-                        int((int(self.totalprice.text()) - int(self.adv.text())) / (int(self.timeC.currentText()) / 3)),
-                        1)))
+                    self.quart.setText(str(round(int((int(self.totalprice.text()) - int(self.adv.text())) / (int(self.timeC.currentText()) / 3)),1)))
         except:
             pass
 
@@ -142,6 +157,13 @@ class Comp(QWidget):
                 self.adv.setStyleSheet("color:blue")
         except:
             pass
+
+    def sys_func(self):
+        if self.adv.text() != '':
+            still = int(self.totalprice.text()) - int(self.adv.text())
+            modistill = round(still*float(self.time_pric[int(self.timeC.currentText())]),0) + int(self.adv.text())
+            self.totalsys.setText(str(modistill))
+            self.metersys.setText(str(round(modistill/int(self.area.text()),0)))
 
 class window(QMainWindow):
     def __init__(self):
