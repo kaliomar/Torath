@@ -9,17 +9,10 @@ class Comp(QWidget):
         self.lbl1 = QLabel('   ')
         self.apartnum = QLabel('رقم الوحدة')
         self.apartnumC = QComboBox()
-        self.apartnumC.addItem('1')
-        self.apartnumC.addItem('2')
-        self.apartnumC.addItem('3')
+        self.apartnumC.addItems(['','1','2','3'])
         self.time = QLabel('مدة القسط')
         self.timeC = QComboBox()
-        self.timeC.addItem('6')
-        self.timeC.addItem('12')
-        self.timeC.addItem('18')
-        self.timeC.addItem('24')
-        self.timeC.addItem('30')
-        self.timeC.addItem('36')
+        self.timeC.addItems(['6','12','18','24','30','36'])
         self.price = QLabel('طريقة الدفع')
         self.priceC = QComboBox()
         self.priceC.addItem('كاش')
@@ -36,6 +29,9 @@ class Comp(QWidget):
         self.lbl_percent = QLabel('%')
         self.lbl_quart = QLabel('قيمة القسط ربع السنوي')
         self.quart = QLineEdit(self)
+
+        self.num_area = {1:'133',2:'108',3:'118'}
+        self.num_pric = {1:'4300',2:'4100',3:'3950'}
 
 
         self.init_ui()
@@ -77,11 +73,43 @@ class Comp(QWidget):
         v_layout.addLayout(h_layout3)
         v_layout.addStretch()
 
+
+        self.apartnumC.currentTextChanged.connect(self.num_area_func)
+        self.priceC.currentTextChanged.connect(self.all_func)
+        self.apartnumC.currentTextChanged.connect(self.all_func)
+
         self.setLayout(v_layout)
         self.resize(600,400)
         self.show()
 
+    def num_area_func(self):
+        try:
+            self.area.setText(self.num_area[int(self.apartnumC.currentText())])
+        except:
+            self.area.setText('')
 
+    def all_func(self):
+        if self.priceC.currentText() == 'كاش' :
+            self.timeC.setCurrentText('')
+            self.timeC.setDisabled(True)
+            self.time.setDisabled(True)
+            self.quart.setDisabled(True)
+            self.lbl_quart.setDisabled(True)
+            self.percent.setDisabled(True)
+            self.lbl_percent.setDisabled(True)
+            self.adv.setDisabled(True)
+            self.lbl_adv.setDisabled(True)
+            self.meterprice.setText(self.num_pric[int(self.apartnumC.currentText())])
+            self.totalprice.setText(str(int(self.meterprice.text())*int(self.area.text())))
+        else:
+            self.timeC.setDisabled(False)
+            self.time.setDisabled(False)
+            self.quart.setDisabled(False)
+            self.lbl_quart.setDisabled(False)
+            self.percent.setDisabled(False)
+            self.lbl_percent.setDisabled(False)
+            self.adv.setDisabled(False)
+            self.lbl_adv.setDisabled(False)
 
 class window(QMainWindow):
     def __init__(self):
